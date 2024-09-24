@@ -1,41 +1,30 @@
-// Assuming you're in a component like Layout.js
-import { useSession, signIn } from "next-auth/react";
+// components/Layout.js
 import Nav from "@/components/Nav";
 import { useState } from "react";
 import Logo from "@/components/Logo";
+import { useAuth } from "@/pages/context/AuthContext";
 
 export default function Layout({ children }) {
   const [showNav, setShowNav] = useState(false);
+  const { user, login, logout, loading } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState(''); // State for error messages
-  const [loading, setLoading] = useState(false); // State for loading status
-  const [session, setSession] = useState(null); // Manage session manually
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleLogin = async () => {
-    setLoading(true);
-    setErrorMessage(''); // Reset error message
-
-    const response = await fetch('/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      setErrorMessage(data.error || 'An error occurred during login.');
-    } else {
-      console.log('Login successful:', data);
-      setSession(data); // Save user session data
+    setErrorMessage('');
+    try {
+      await login(email, password);
+    } catch (error) {
+      setErrorMessage(error.message);
     }
-    setLoading(false); // Reset loading status
   };
 
-  if (!session) {
+  if (loading) {
+    return <div>Loading...</div>; // Show loading state
+  }
+
+  if (!user) {
     return (
       <div className="bg-bgGray w-screen h-screen flex items-center justify-center px-4">
         <div className="text-center w-full max-w-xs">
@@ -54,14 +43,19 @@ export default function Layout({ children }) {
             onChange={(e) => setPassword(e.target.value)}
             className="border p-3 rounded-lg mb-6 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <button onClick={handleLogin} className="bg-blue-500 text-white py-2 px-4 rounded-lg w-full hover:bg-blue-600 transition">Login</button>
+          <button
+            onClick={handleLogin}
+            className="bg-blue-500 text-white py-2 px-4 rounded-lg w-full hover:bg-blue-600 transition">
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
+          {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-bgGray min-h-screen ">
+    <div className="bg-bgGray min-h-screen">
       <div className="block md:hidden flex items-center p-4">
         <button onClick={() => setShowNav(true)}>
           {/* Hamburger icon */}
