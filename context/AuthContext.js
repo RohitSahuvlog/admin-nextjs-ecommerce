@@ -1,5 +1,6 @@
 // context/AuthContext.js
-import { createContext, useContext, useState, useEffect } from 'react';
+const { createContext, useContext, useState, useEffect } = require('react');
+
 
 const AuthContext = createContext();
 

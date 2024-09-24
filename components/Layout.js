@@ -2,7 +2,7 @@
 import Nav from "@/components/Nav";
 import { useState } from "react";
 import Logo from "@/components/Logo";
-import { useAuth } from "@/pages/context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Layout({ children }) {
   const [showNav, setShowNav] = useState(false);

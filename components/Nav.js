@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { signOut } from "next-auth/react";
 import Logo from "@/components/Logo";
-import { useAuth } from "@/pages/context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Nav({ show }) {
   const { user, login, logout, loading } = useAuth();
