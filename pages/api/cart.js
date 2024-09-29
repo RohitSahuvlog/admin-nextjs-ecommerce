@@ -21,7 +21,7 @@ export default async function handle(req, res) {
       res.status(200).send(products);
     } catch (error) {
       console.log('Error fetching products from database:', error);
-      res.status(500).send('Error fetching products');
+      res.status(500).send('Error fetching products', error);
     }
   } else {
     res.status(405).send(`Method ${req.method} Not Allowed`);
